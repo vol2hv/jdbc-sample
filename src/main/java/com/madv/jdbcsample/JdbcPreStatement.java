@@ -6,14 +6,13 @@ import lombok.extern.log4j.Log4j2;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 // TODO: 29.06.2021 все длинные стринги в Enum
 @Log4j2
-public class JdbcStatement {
+public class JdbcPreStatement {
     private Connection connection;
 
-    public JdbcStatement(Connection connection) {
+    public JdbcPreStatement(Connection connection) {
         this.connection = connection;
     }
 
@@ -21,13 +20,15 @@ public class JdbcStatement {
 
     public void tableCreate() throws SQLException {
         Statement statement = connection.createStatement();
-        statement.execute(SqlQuery.SQL_CREATE.getText());
+        PreparedStatement preStatement = connection.prepareStatement(SqlQuery.SQL_CREATE.getText());
+        preStatement.execute();
     }
 
     public void tableDrop() throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.execute(SqlQuery.SQL_DROP.getText());
+        PreparedStatement preparedStatement = connection.prepareStatement(SqlQuery.SQL_DROP.getText());
+        preparedStatement.execute();
     }
+
     public int rowInsert() throws SQLException {
         Statement statement = connection.createStatement();
         int row = statement.executeUpdate(generateInsert("ivanoff", new BigDecimal(999.80)));
