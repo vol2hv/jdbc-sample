@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
 
-// TODO: 29.06.2021 все длинные стринги в Enum
 @Log4j2
 public class JdbcPreStatement {
     private Connection connection;
