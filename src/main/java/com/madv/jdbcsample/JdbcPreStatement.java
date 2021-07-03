@@ -16,7 +16,7 @@ public class JdbcPreStatement {
         this.connection = connection;
     }
 
-    String sql = "SELECT * FROM EMPLOYEE";
+//    String sql = "SELECT * FROM EMPLOYEE";
 
     public void tableCreate() throws SQLException {
         Statement statement = connection.createStatement();
@@ -31,49 +31,92 @@ public class JdbcPreStatement {
 
     public int rowInsert() throws SQLException {
         Statement statement = connection.createStatement();
-        int row = statement.executeUpdate(generateInsert("ivanoff", new BigDecimal(999.80)));
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(SqlQuery.SQL_INSERT.getText());
+        preparedStatement.setString(1, "ivanoff");
+        preparedStatement.setBigDecimal(2, new BigDecimal(799.88));
+        preparedStatement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+        int row = preparedStatement.executeUpdate();
         return row;
     }
 
     public Employee rowSelect() throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(SqlQuery.SQL_SELECT.getText());
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
         Employee employee = new Employee();
         while (resultSet.next()) {
-            employee.setId(resultSet.getLong("ID"));
-            employee.setName(resultSet.getString("NAME"));
-            employee.setSalary(resultSet.getBigDecimal("SALARY"));
-            employee.setCreatedDate(resultSet.getTimestamp("CREATED_DATE").toLocalDateTime());
-            log.debug(employee.toString());
+
+            long id = resultSet.getLong("ID");
+            String name = resultSet.getString("NAME");
+            BigDecimal salary = resultSet.getBigDecimal("SALARY");
+            Timestamp createdDate = resultSet.getTimestamp("CREATED_DATE");
+            employee.setId(id);
+            employee.setName(name);
+            employee.setSalary(salary);
+            // Timestamp -> LocalDateTime
+            employee.setCreatedDate(createdDate.toLocalDateTime());
         }
         return employee;
     }
 
     public int rowUpdate() throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(SqlQuery.SQL_UPDATE.getText());
         Statement statement = connection.createStatement();
-        int row = statement.executeUpdate(updateSalaryByName("ivanoff", new BigDecimal(777)));
+        preparedStatement.setBigDecimal(1, new BigDecimal(999.99));
+        preparedStatement.setString(2, "ivanoff");
+        int row = preparedStatement.executeUpdate();
         return row;
     }
 
     public int rowDelete() throws SQLException {
+        PreparedStatement preparedStatement =
+                connection.prepareStatement(SqlQuery.SQL_DELETE.getText());
         Statement statement = connection.createStatement();
-        int row = statement.executeUpdate(deleteByName("ivanoff"));
+        preparedStatement.setString(1, "ivanoff");
+        int row = preparedStatement.executeUpdate();
         return row;
     }
 
     public void batchUpdate() throws SQLException {
         Statement statement = connection.createStatement();
+        PreparedStatement psCreate = connection.prepareStatement(SqlQuery.SQL_CREATE.getText());
+        PreparedStatement psDrop = connection.prepareStatement(SqlQuery.SQL_DROP.getText());
 
-            connection.setAutoCommit(false);
+        PreparedStatement psInsert = connection.prepareStatement(SqlQuery.SQL_INSERT.getText());
+        PreparedStatement psUpdate = connection.prepareStatement(SqlQuery.SQL_UPDATE.getText());
+        connection.setAutoCommit(false);
+        psDrop.execute();
+        psCreate.execute();
 
-            statement.addBatch(SqlQuery.SQL_DROP.getText());
-            statement.addBatch(SqlQuery.SQL_CREATE.getText());
-            statement.addBatch(generateInsert("ivanoff", new BigDecimal(1000)));
-            statement.addBatch(generateInsert("jane", new BigDecimal(3000)));
-            statement.addBatch(updateSalaryByName("ivanoff", new BigDecimal(7777)));
-            int[] rows = statement.executeBatch();
+        psInsert.setString(1, "ivanoff");
+        psInsert.setBigDecimal(2, new BigDecimal(10));
+        psInsert.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+        psInsert.addBatch();
+        psInsert.setString(1, "petrov");
+        psInsert.setBigDecimal(2, new BigDecimal(20));
+        psInsert.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+        psInsert.addBatch();
+        psInsert.setString(1, "sidorov");
+        psInsert.setBigDecimal(2, new BigDecimal(30));
+        psInsert.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+        psInsert.addBatch();
+        int[] rows = psInsert.executeBatch();
 
-            connection.commit();
+        psUpdate.setBigDecimal(1, new BigDecimal(999.99));
+        psUpdate.setString(2, "ivanoff");
+        psUpdate.addBatch();
+
+        psUpdate.setBigDecimal(1, new BigDecimal(888.88));
+        psUpdate.setString(2, "sidorov");
+        psUpdate.addBatch();
+
+        int[] rows2 = psUpdate.executeBatch();
+
+        connection.commit();
         }
 
 // ----------------------------------------------------------------------

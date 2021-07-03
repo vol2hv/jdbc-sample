@@ -40,10 +40,11 @@ public class JDBCExample {
         log.info("Ура заработало.");
         Connection connection = JDBCExample.getConn();
         JdbcStatement jdbcStatement = new JdbcStatement(connection);
+        JdbcPreStatement jdbcPreStatement = new JdbcPreStatement(connection);
 
         try {
-//            jdbcStatement.rowInsert();
             jdbcStatement.batchUpdate();
+            jdbcPreStatement.batchUpdate();
             jdbcStatement();
             jdbcPreStatemtnt();
         } catch (SQLException e) {

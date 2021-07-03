@@ -8,7 +8,6 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-// TODO: 29.06.2021 все длинные стринги в Enum
 @Log4j2
 public class JdbcStatement {
     private Connection connection;

@@ -9,6 +9,18 @@ public enum SqlQuery {
             .toString()),
     SQL_DROP(new StringBuffer()
             .append("DROP TABLE IF EXISTS EMPLOYEE")
+            .toString()),
+    SQL_INSERT(new StringBuffer()
+            .append("INSERT INTO EMPLOYEE (NAME, SALARY, CREATED_DATE) VALUES (?,?,?)")
+            .toString()),
+    SQL_SELECT(new StringBuffer()
+            .append("SELECT * FROM EMPLOYEE")
+            .toString()),
+    SQL_UPDATE(new StringBuffer()
+            .append("UPDATE EMPLOYEE SET SALARY=? WHERE NAME=?")
+            .toString()),
+    SQL_DELETE(new StringBuffer()
+            .append("DELETE FROM EMPLOYEE WHERE NAME=?")
             .toString());
 
     private String text;
