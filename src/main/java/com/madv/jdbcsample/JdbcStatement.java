@@ -1,12 +1,10 @@
 package com.madv.jdbcsample;
 
-import com.madv.jdbcsample.model.Employee;
 import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Log4j2
 public class JdbcStatement {

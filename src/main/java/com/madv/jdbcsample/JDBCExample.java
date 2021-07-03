@@ -41,14 +41,16 @@ public class JDBCExample {
         Connection connection = JDBCExample.getConn();
         JdbcStatement jdbcStatement = new JdbcStatement(connection);
         JdbcPreStatement jdbcPreStatement = new JdbcPreStatement(connection);
+        TransactionExample transactionExample = new TransactionExample(connection);
 
         try {
             jdbcStatement.batchUpdate();
             jdbcPreStatement.batchUpdate();
-            jdbcStatement();
-            jdbcPreStatemtnt();
+            log.info("Следующая ошибка должна иметь меcто.");
+            transactionExample.run();
+
         } catch (SQLException e) {
-            log.info("SQL State:{} Message: {}");
+            log.error("SQL State:{} Message: {}");
             e.printStackTrace();
         } catch (Exception throwables) {
             throwables.printStackTrace();
@@ -60,6 +62,5 @@ public class JDBCExample {
     private static void jdbcPreStatemtnt() {
     }
 
-    private static void jdbcStatement() {
-    }
+
 }

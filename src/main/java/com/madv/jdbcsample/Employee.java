@@ -1,4 +1,4 @@
-package com.madv.jdbcsample.model;
+package com.madv.jdbcsample;
 
 import lombok.Data;
 
